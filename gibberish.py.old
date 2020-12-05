@@ -1,0 +1,92 @@
+# Gibberish Generator (Python).
+# Algorithm: Letter-based Markov text generator.
+# Original code written in JavaScript:
+# Keith Enevoldsen, thinkzone.wlonk.com
+
+import random
+
+
+def _pick_match_index(text: str, target: str, n_chars: int) -> int:
+    """ I don't know what this does """
+    # Find all sets of matching target characters.
+    n_matches = 0
+    target_index = -1
+    while True:
+        try:
+            target_index = text.index(target, target_index + 1)
+        except ValueError:
+            break
+        if target_index >= n_chars:
+            break
+        n_matches += 1
+
+    # Pick a match at random.
+    return random.randint(0, n_matches)
+
+
+def _pick_char(text: str, target: str, level: int, n_chars: int) -> str:
+    MATCH_INDEX = _pick_match_index(text, target, n_chars)
+    
+    # Find the character following the matching characters.
+    n_matches = 0
+    target_index = -1
+    while True:
+        target_index = text.index(target, target_index + 1)
+        if target_index >= n_chars:
+            raise IndexError("Index out of range. This should never happen.")
+        elif MATCH_INDEX == n_matches:
+            # If this new index is out of bounds, return an empty string instead.
+            new_index = target_index + level - 1
+            return text[new_index] if new_index <= n_chars else ""
+        n_matches += 1
+
+
+def generate_gibberish(text: str, level: int=4, length: int=500) -> str:
+    N_CHARS = len(text)
+
+    if N_CHARS < level:
+        raise ValueError("Too few input characters.")
+
+    char_index = None
+
+    # Make the string contain two copies of the input text.
+    # This allows for wrapping to the beginning when the end is reached.
+    text += text
+
+    # Ensure the input text ends with a space.
+    if text[-1] != " ":
+        text += " "
+
+    # Pick a random starting character, preferably an uppercase letter.
+    for _ in range(1000):
+        char_index = random.randint(0, N_CHARS)
+        if text[char_index].isupper():
+            break
+
+    # Write starting characters.
+    output = text[char_index : char_index + level]
+
+    # Set target string.
+    target = text[char_index + 1 : char_index + level]
+
+    # Generate characters.
+    for _ in range(length):
+        if (level == 1):
+            # Pick a random character.
+            output += text[random.randint(0, N_CHARS)]
+        else:
+            # Pick the next character.
+            # If this returns None, use the last picked character instead.
+            char = _pick_char(text, target, level, N_CHARS)
+
+            # Update the target.
+            target = target[1 : level - 1] + char
+
+            # Add the character to the output.
+            output += char
+
+    return output
+
+
+bee = "According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway, because bees don't care what humans think is impossible."
+print(generate_gibberish(bee, 3, 500))
