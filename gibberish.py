@@ -54,7 +54,7 @@ def generate_gibberish(text: str, lev: int) -> str:
     for i in range(500):
         if lev == 1:
             # Pick a random character.
-            char = _char_at(text, nath.floor(nchars * random.random()))
+            char = _char_at(text, math.floor(nchars * random.random()))
         else:
             # Find all sets of matching target characters.
             nmatches = 0
