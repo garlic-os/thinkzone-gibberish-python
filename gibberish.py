@@ -91,6 +91,6 @@ def generate_gibberish(text: str, lev: int) -> str:
 
 
 
-bee = "basically start recording your dreams in a journal, then try to figure out commonalities that happen in your dreams, but not in your daily life. for example, i often have dreams where my teeth fall out or get crooked. thus, i can tell myself that if my teeth are falling out, i know that im dreaming."
-output = generate_gibberish(bee, 3)
+text = "basically start recording your dreams in a journal, then try to figure out commonalities that happen in your dreams, but not in your daily life. for example, i often have dreams where my teeth fall out or get crooked. thus, i can tell myself that if my teeth are falling out, i know that im dreaming."
+output = generate_gibberish(text, 3)
 print(output)
